@@ -1,4 +1,5 @@
 encryptionsalt: v1:DoClUhoSxAE=:v1:NbyYLC1Rn/io7+E+:7VcmFfyLcw+2mkFIVcc8XGVY8QBI7w==
 config:
   kubernetes:context: switch-dev
+  kubernetes:namespace: ralf-dev
   pulumi-test:namespace: ralf-dev
