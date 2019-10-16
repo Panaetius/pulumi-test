@@ -4,6 +4,7 @@ import pulumi
 from pulumi_kubernetes.apps.v1 import Deployment
 from pulumi_kubernetes.core.v1 import Namespace, Service, Secret
 from pulumi_kubernetes.extensions.v1beta1 import Ingress
+from pulumi_kubernetes.helm.v2 import Chart, ChartOpts
 #from pulumi_random.random_pet import RandomPet
 from pulumi_random.random_password import RandomPassword
 
@@ -78,6 +79,22 @@ ingress = Ingress(
         }]
     }
     )
+
+def add_dummy_label(o):
+    """Modify all resources in the chart to have a new dummy label"""
+    if not o or 'metadata' not in o or 'labels' not in o['metadata']:
+        return
+
+    o['metadata']['labels']["foo"] = "bar"
+
+chart = Chart(
+    "postgres",
+    config=ChartOpts(
+        chart="stable/postgresql",
+        version="6.3.13",
+        transformations=[add_dummy_label]
+    )
+)
 
 pulumi.export("name", deployment.metadata["name"])
 pulumi.export("url", ingress.spec.apply(lambda s: s['rules'][0]['host'] + s['rules'][0]['http']['paths'][0]['path'] ))
